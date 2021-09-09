@@ -1,0 +1,27 @@
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER Function [dbo].[UFirst](@String Varchar(5000))
+Returns Varchar(5000)
+Begin
+
+   Declare @RetornoString Varchar(5000)
+   Declare @Start Int, @end Int
+   Select @Start = 2, @end = Len(@String)
+   Select @RetornoString = Upper(Left(@String,1))
+   While @start <= @End
+   Begin
+     If substring(@String,@Start,1) = ' '
+     Begin
+        Select @Start = @start + 1
+        Select @RetornoString = @RetornoString + ' ' + Upper(substring(@String,@Start,1))
+     End
+     Else
+     Begin
+       Select @RetornoString = @RetornoString + substring(@String,@Start,1)
+     End
+     Select @Start = @start + 1
+   End
+Return @RetornoString
+End

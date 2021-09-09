@@ -1,0 +1,45 @@
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ ALTER Function [dbo].[fTendenciaRL](@seq  dbo.SeqTendencia READONLY)
+Returns float
+Begin
+   -- Recebe a SeqTendencia que é uma tabela com ordem e valor
+-- Função que faz uma regressão linear-
+ 
+--https://social.msdn.microsoft.com/Forums/sqlserver/en-US/6c51907b-1340-422b-8aed-e1a3c77f855c/is-there-a-basic-function-for-calculating-a-trend-in-sql-2000?forum=transactsql
+-- essa função fica perfeita para casos como 2,4,6,8…  ela vai dizer que o próximo é 10..
+-- mas não tão boa para casos como 8,8,8,2…    vai dizer que o próximo é 2
+
+	declare @ct int
+	select @ct = count(1)+1 from @seq
+
+	declare @res numeric(24,4)
+
+	select @res = @ct * Slope+Intercept
+	from
+	(
+	 select Slope
+	,Intercept=(SumY-Slope*SumX)/N
+	 from
+	 (
+	select Slope=(N*SumXY-SumX*SumY)/(N*SumXX-SumX*SumX)
+	 ,SumY
+	 ,SumX
+	 ,N
+	from
+	(
+	  select SumXY=sum(ordem*valor)*1.00
+	,SumX=sum(ordem)*1.00
+	,SumY=sum(valor)*1.00
+	,SumXX=sum(ordem*ordem)*1.00
+	,SumYY=sum(valor*valor)*1.00
+	,N=count(*)*1.00
+	  from @seq
+	) CalcSums
+	 ) CalcSlope
+	) CalcIntercept  
+
+	Return  @res
+End

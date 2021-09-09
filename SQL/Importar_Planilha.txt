@@ -1,0 +1,33 @@
+Precisa ter o Office instalado na máquina local.
+
+E no momento de executar o comando não pode estar com a planilha aberta no Excel
+
+Executar o comando
+
+
+
+Em Azul - Nome da tabela aonde você quer que vá parar os dados
+
+Em Vermelho - Diretório e nome do arquivo xls
+
+Em Verde - Nome da página da planilha que é para ser importada
+
+
+
+drop table if exists RelVendasBling
+
+
+
+SELECT * 
+
+Into RelVendasBling
+
+FROM OPENROWSET('Microsoft.ACE.OLEDB.12.0',
+
+'Excel 12.0; Database=C:\Users\lucas\Desktop\New_folder\Fev2019-Loja1.xls; HDR=YES; IMEX=1',
+
+'SELECT * FROM [Pedidos de venda$] ') 
+
+
+
+select * from RelVendasBling

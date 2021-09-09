@@ -1,0 +1,98 @@
+ 
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER Function [dbo].[fNum](@Num Float, @isMonet char(2), @QtdeDec Int)
+Returns Varchar(50)
+Begin
+/*
+  Se @isMonet for enviado, simplesmente soma ao começo da string final
+ 
+  @QtdeDec >= 0 só reduz o número de decimais para esse valor
+ 
+  @QtdeDec = -1 vai transformar o número no formato comum de KPIs (ver obs em cada IF)
+  @QtdeDec = -2  mesmo que -1 no arredondar, mas ao invés de K mostra mil  (Para textos)
+*/
+
+ Declare @AuxNum Varchar(50)
+ Declare @Res Varchar(50)
+ Declare @fl char(1) = ''
+ 
+ -- Só reduz número de decimais
+ IF (@QtdeDec >= 0)
+ BEGIN
+   DECLARE @cnt INT = 1,  @zeros varchar(20) = ''
+   WHILE @cnt <= @QtdeDeC
+   BEGIN
+     SET @zeros = @zeros + '0'
+     SET @cnt = @cnt + 1
+   END
+ 
+   SET @Res =   FORMAT(@Num, '#,##0.'+@zeros, 'de-de')
+ END  --  IF (@QtdeDec >= 0)
+
+ -- Muda formato do número
+ IF (@QtdeDec < 0)
+ BEGIN
+   if (@Num < 0) -- se for negativo pega absoluto e seta flag do negativo
+   begin
+    set @fl = '-'
+    set @Num = abs(@Num)
+   end
+
+
+  Declare @K Varchar(10) = 'K'
+  Declare @M Varchar(10) = 'M'
+  Declare @B Varchar(10) = 'B'
+  IF (@QtdeDec = -2)
+  begin
+    set @K = 'mil'
+    set @M = 'milhões'
+    set @B = 'bilhões'  
+  end
+ 
+ 
+  if (@Num >= 1000000000) -- acima de 1 Bilhão, sempre deixa casa decimal...
+  begin
+     set @Num = @Num/1000000000  
+     SET @Res =   FORMAT(@Num, @fl+'#,##0.0 ' + @B, 'de-de')
+  end
+  else
+  if (@Num >= 10000000) -- acima de 10 Milhões deixa sem casa, tipo 12 M
+  begin
+     set @Num = @Num/1000000  
+     SET @Res =   FORMAT(@Num, @fl+'#,##0 ' + @M, 'de-de')
+  end
+  else
+  if (@Num >= 1000000) -- entre 1 Milhão e menos que 10 Milhões deixa 1 casa, tipo 2,3 M
+  begin
+    set @Num = @Num/1000000  
+    SET @Res =   FORMAT(@Num, @fl+'#,##0.0 ' + @M, 'de-de')
+  end
+  else
+  if (@Num >= 10000) -- entre 10.000 e 1.000.000 deixa sem casa decimal  tpo 10 K
+  begin
+     set @Num = @Num/1000  
+     SET @Res =   FORMAT(@Num, @fl+'#,##0 '+ @k, 'de-de')
+  end
+  else
+   if (@Num >= 1000)  -- entre 1.000 e 10.000 deixa com uma decimal  tipo 1,5 K
+   begin
+      set @Num = @Num/1000  
+      SET @Res =   FORMAT(@Num, @fl+'#,##0.0 '+ @k, 'de-de')
+
+
+   end
+   else
+        SET @Res =   FORMAT(@Num, @fl+'#,##0', 'de-de') -- menor que mil apenas tira decimais
+ END --   IF (@QtdeDec = -1)  
+
+
+ -- Se veio algo na moeda adiciona no começo
+ IF  (@isMonet <> '') SET @Res =   @isMonet + ' '+ @Res
+ 
+ Return @Res
+End
+

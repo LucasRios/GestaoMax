@@ -1,0 +1,16 @@
+USE [SWINTEGRADORWEB_NOTRIX]
+GO
+/****** Object:  UserDefinedFunction [dbo].[fTendenciaMP]    Script Date: 08/09/2021 22:09:16 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER Function [dbo].[fTendenciaMP](@seq  dbo.SeqTendencia READONLY)
+Returns float
+Begin
+	-- Função para calcular tendência com Média Ponderada
+	-- Recebe a SeqTendencia que é uma tabela com ordem e valor
+	declare @res numeric(24,4)
+	select @res = sum(valor * ordem) / sum(ordem) from @seq
+	Return  @res
+End
