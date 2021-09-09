@@ -1,5 +1,5 @@
-USE [SWINTEGRADORWEB_NOTRIX]
-GO
+https://gestaomax.com.br/
+
 /****** Object:  UserDefinedFunction [dbo].[fTendenciaMP]    Script Date: 08/09/2021 22:09:16 ******/
 SET ANSI_NULLS ON
 GO
