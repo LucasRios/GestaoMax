@@ -7,3 +7,17 @@ Funções em SQL Server / C# / Integrações API e arquivos públicos.
 
 https://gestaomax.com.br/
 
+
+# Integrações
+
+Tiny ERP
+
+https://gestaomax.com.br/tiny/
+
+Bling ERP
+
+https://gestaomax.com.br/bling/
+
+Omie ERP
+
+https://gestaomax.com.br/omie/
