@@ -2,6 +2,11 @@
 
 > Auxiliary functions, SQL utilities, and geospatial data assets used across the GestaoMax platform — a multi-tenant SaaS for business management built in .NET and SQL Server.
 
+![SQL Server](https://img.shields.io/badge/SQL%20Server-2012%2B-CC2927?style=flat-square&logo=microsoftsqlserver&logoColor=white)
+![T-SQL](https://img.shields.io/badge/T--SQL-Scalar%20Functions-blue?style=flat-square)
+![GeoJSON](https://img.shields.io/badge/GeoJSON-RFC%207946-green?style=flat-square)
+![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)
+
 ---
 
 ## Overview
@@ -39,6 +44,35 @@ Municipal boundary polygons for all 26 Brazilian states + Federal District, form
 | `SP-ZN.json` / `SP-ZN2.json` | São Paulo city — zone segmentation |
 | `SP-subprefeitura.json` | São Paulo city — sub-prefecture boundaries |
 | `geojs-35-mun.json` | São Paulo state — GeoJS-compatible format |
+
+---
+
+## Getting Started
+
+### SQL Functions
+
+Open any `.txt` file in `SQL/`, copy the `CREATE FUNCTION` statement, and execute it against your SQL Server database:
+
+```sql
+-- Example: installing the accent-removal function
+-- Open: SQL/Função Retira Acento.txt
+-- Execute in SSMS or sqlcmd against your target database
+
+SELECT dbo.fn_RetiraAcento(N'São Paulo')  -- returns 'Sao Paulo'
+```
+
+Compatible with **SQL Server 2012+**.
+
+### GeoJSON Maps
+
+Load any `.json` file directly in your mapping library of choice:
+
+```javascript
+// Leaflet.js example
+fetch('35-mun.json')
+  .then(res => res.json())
+  .then(data => L.geoJSON(data).addTo(map));
+```
 
 ---
 
